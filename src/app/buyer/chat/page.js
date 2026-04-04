@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/lib/api";
 import ChatWindow from "@/components/chat/ChatWindow";
 import Spinner from "@/components/ui/Spinner";
 
-export default function BuyerChatPage() {
+function BuyerChatInner() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const roomParam = searchParams.get("room");
@@ -83,5 +83,13 @@ export default function BuyerChatPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function BuyerChatPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center pt-32"><Spinner /></div>}>
+      <BuyerChatInner />
+    </Suspense>
   );
 }
