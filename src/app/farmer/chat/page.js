@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/lib/api";
 import ChatWindow from "@/components/chat/ChatWindow";
 import Spinner from "@/components/ui/Spinner";
 
-export default function FarmerChatPage() {
+function FarmerChatInner() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const roomParam = searchParams.get("room");
@@ -81,5 +81,13 @@ export default function FarmerChatPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function FarmerChatPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center pt-32"><Spinner /></div>}>
+      <FarmerChatInner />
+    </Suspense>
   );
 }
