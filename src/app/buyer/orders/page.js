@@ -47,34 +47,60 @@ export default function BuyerOrdersPage() {
   const completedUnrated = orders.filter((o) => o.status === "completed" && !ratedOrders.has(o.id));
 
   return (
-    <div className="p-6 max-w-3xl">
-      <h1 className="font-display text-3xl font-bold text-earth mb-6">My Orders</h1>
+    <div className="p-6 max-w-3xl animate-fade-in">
+      {/* Header */}
+      <div className="mb-6">
+        <span className="text-leaf-600 text-xs font-semibold uppercase tracking-widest">Buyer</span>
+        <h1 className="font-display text-3xl font-bold text-earth mt-1">My Orders</h1>
+      </div>
 
+      {/* Rate nudge */}
       {completedUnrated.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6">
-          <p className="text-sm font-medium text-amber-800 mb-2">⭐ Rate your recent orders</p>
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
+          <p className="text-sm font-semibold text-amber-800 mb-3 flex items-center gap-2">
+            <span>⭐</span> Rate your recent orders
+          </p>
           <div className="flex flex-wrap gap-2">
             {completedUnrated.slice(0, 3).map((o) => (
-              <button key={o.id} onClick={() => setRatingModal(o)} className="text-xs bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-lg hover:bg-amber-200 transition-colors font-medium">
-                Rate: {o.product?.name}
+              <button
+                key={o.id}
+                onClick={() => setRatingModal(o)}
+                className="text-xs bg-white text-amber-800 border border-amber-200 px-3 py-1.5 rounded-xl hover:bg-amber-100 transition-colors font-medium shadow-warm-sm"
+              >
+                Rate: {o.product?.name} →
               </button>
             ))}
           </div>
         </div>
       )}
 
-      <div className="flex gap-1 mb-6 p-1 bg-soil-100 rounded-xl w-fit overflow-x-auto scrollbar-hide">
+      {/* Tabs */}
+      <div className="flex gap-1 mb-6 p-1 bg-soil-100 rounded-xl w-fit overflow-x-auto scrollbar-hide border border-[var(--border)]">
         {TABS.map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize whitespace-nowrap transition-colors ${tab === t ? "bg-white text-earth shadow-warm-sm" : "text-muted hover:text-earth"}`}>{t}</button>
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize whitespace-nowrap transition-colors ${
+              tab === t ? "bg-white text-earth shadow-warm-sm" : "text-muted hover:text-earth"
+            }`}
+          >
+            {t}
+            {t !== "all" && orders.filter((o) => o.status === t).length > 0 && (
+              <span className="ml-1.5 text-xs bg-leaf-100 text-leaf-700 px-1.5 py-0.5 rounded-full">
+                {orders.filter((o) => o.status === t).length}
+              </span>
+            )}
+          </button>
         ))}
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="text-5xl mb-3">📦</div>
+        <div className="card p-16 text-center">
+          <div className="w-16 h-16 bg-soil-50 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">📦</div>
           <p className="font-display text-xl font-semibold text-earth">No {tab} orders</p>
+          <p className="text-muted text-sm mt-2">Nothing here yet.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -82,8 +108,11 @@ export default function BuyerOrdersPage() {
             <div key={order.id}>
               <OrderCard order={order} role="buyer" onStatusChange={handleStatusChange} />
               {order.status === "completed" && !ratedOrders.has(order.id) && (
-                <button onClick={() => setRatingModal(order)} className="text-xs text-leaf-600 hover:underline ml-1 mt-1 block">
-                  Leave a rating for this order
+                <button
+                  onClick={() => setRatingModal(order)}
+                  className="text-xs text-leaf-600 font-medium hover:underline ml-1 mt-1.5 block"
+                >
+                  ⭐ Leave a rating for this order
                 </button>
               )}
             </div>
@@ -91,12 +120,13 @@ export default function BuyerOrdersPage() {
         </div>
       )}
 
+      {/* Rating modal */}
       <Modal open={!!ratingModal} onClose={() => setRatingModal(null)} title="Rate this farmer">
         {ratingModal && (
           <div className="space-y-4">
-            <div className="bg-soil-50 rounded-xl p-4">
-              <p className="font-medium text-earth text-sm">{ratingModal.product?.name}</p>
-              <p className="text-xs text-muted">From {ratingModal.farmer?.farmName || ratingModal.farmer?.name}</p>
+            <div className="bg-leaf-50 border border-leaf-200 rounded-xl p-4">
+              <p className="font-semibold text-earth text-sm">{ratingModal.product?.name}</p>
+              <p className="text-xs text-muted mt-0.5">From {ratingModal.farmer?.farmName || ratingModal.farmer?.name}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-earth mb-2">Your rating</p>
@@ -104,9 +134,17 @@ export default function BuyerOrdersPage() {
             </div>
             <div>
               <label className="text-sm font-medium text-earth block mb-1.5">Review (optional)</label>
-              <textarea value={rating.review} onChange={(e) => setRating((r) => ({ ...r, review: e.target.value }))} rows={3} placeholder="Share your experience..." className="input-base resize-none text-sm" />
+              <textarea
+                value={rating.review}
+                onChange={(e) => setRating((r) => ({ ...r, review: e.target.value }))}
+                rows={3}
+                placeholder="Share your experience with this farmer..."
+                className="input-base resize-none text-sm"
+              />
             </div>
-            <Button onClick={submitRating} loading={submitting} disabled={!rating.stars} className="w-full justify-center">Submit Rating</Button>
+            <Button onClick={submitRating} loading={submitting} disabled={!rating.stars} className="w-full justify-center">
+              Submit Rating
+            </Button>
           </div>
         )}
       </Modal>

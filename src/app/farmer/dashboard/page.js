@@ -39,27 +39,52 @@ export default function FarmerDashboard() {
   const pendingOrders = data.orders.filter((o) => o.status === "pending").length;
 
   return (
-    <div className="p-6 max-w-5xl">
+    <div className="p-6 max-w-5xl animate-fade-in">
+      {/* Header */}
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-earth">Good morning, {user?.name?.split(" ")[0]} 👋</h1>
+        <span className="text-leaf-600 text-xs font-semibold uppercase tracking-widest">Farmer Dashboard</span>
+        <h1 className="font-display text-3xl font-bold text-earth mt-1">
+          Good morning, {user?.name?.split(" ")[0]} 👋
+        </h1>
         <p className="text-muted text-sm mt-1">{user?.farmName}</p>
       </div>
 
+      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: "Active Listings", value: activeListings, href: "/farmer/listings", color: "text-leaf-600" },
-          { label: "Pending Orders", value: pendingOrders, href: "/farmer/orders", color: "text-amber-600" },
-          { label: "Completed Orders", value: data.profile?.completedOrders || 0, href: "/farmer/orders", color: "text-blue-600" },
-          { label: "Merit Score", value: Math.round(data.profile?.meritScore || 0), href: "#merit", color: "text-soil-600" },
+          { label: "Active Listings", value: activeListings, href: "/farmer/listings", color: "text-leaf-600", bg: "bg-leaf-50", icon: "🌾" },
+          { label: "Pending Orders", value: pendingOrders, href: "/farmer/orders", color: "text-amber-600", bg: "bg-amber-50", icon: "⏳" },
+          { label: "Completed Orders", value: data.profile?.completedOrders || 0, href: "/farmer/orders", color: "text-blue-600", bg: "bg-blue-50", icon: "✅" },
+          { label: "Merit Score", value: Math.round(data.profile?.meritScore || 0), href: "#merit", color: "text-soil-600", bg: "bg-soil-50", icon: "🏆" },
         ].map((stat) => (
-          <Link key={stat.label} href={stat.href} className="card p-5 hover:shadow-warm-lg transition-shadow">
+          <Link key={stat.label} href={stat.href} className="card p-5 hover:shadow-warm-lg transition-all group">
+            <div className={`w-8 h-8 ${stat.bg} rounded-lg flex items-center justify-center mb-3 text-sm`}>{stat.icon}</div>
             <p className="text-muted text-xs mb-1">{stat.label}</p>
             <p className={`font-display text-3xl font-bold ${stat.color}`}>{stat.value}</p>
           </Link>
         ))}
       </div>
 
+      {/* Quick action banner */}
+      <div className="relative bg-earth rounded-3xl p-6 mb-8 overflow-hidden shadow-warm-lg">
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 80% 50%, rgba(56,152,54,0.15) 0%, transparent 60%)" }} />
+        <div className="relative flex items-center justify-between gap-4">
+          <div>
+            <h2 className="font-display text-xl font-semibold text-white mb-1">List new produce</h2>
+            <p className="text-soil-300 text-sm">Reach buyers across India directly.</p>
+          </div>
+          <Link
+            href="/farmer/listings/new"
+            className="shrink-0 bg-leaf-400 text-leaf-900 font-semibold px-5 py-2.5 rounded-xl hover:bg-leaf-300 transition-colors text-sm whitespace-nowrap shadow-warm"
+          >
+            + New Listing
+          </Link>
+        </div>
+      </div>
+
+      {/* Main grid */}
       <div className="grid md:grid-cols-2 gap-6">
+        {/* Merit */}
         <div id="merit">
           <MeritBreakdown
             score={Math.round(data.profile?.meritScore || 0)}
@@ -67,19 +92,23 @@ export default function FarmerDashboard() {
           />
         </div>
 
+        {/* Recent Orders */}
         <div className="card p-5">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-5">
             <h2 className="font-display text-lg font-semibold text-earth">Recent Orders</h2>
-            <Link href="/farmer/orders" className="text-xs text-leaf-600 hover:underline">View all</Link>
+            <Link href="/farmer/orders" className="text-xs text-leaf-600 font-medium hover:underline">View all →</Link>
           </div>
           {data.orders.length === 0 ? (
-            <p className="text-sm text-muted text-center py-6">No orders yet</p>
+            <div className="text-center py-8">
+              <div className="text-3xl mb-2">📦</div>
+              <p className="text-sm text-muted">No orders yet</p>
+            </div>
           ) : (
             <div className="space-y-3">
               {data.orders.map((order) => (
-                <div key={order.id} className="flex items-center justify-between text-sm">
+                <div key={order.id} className="flex items-center justify-between text-sm p-3 rounded-xl hover:bg-soil-50 transition-colors">
                   <div>
-                    <p className="font-medium text-earth">{order.product?.name}</p>
+                    <p className="font-semibold text-earth">{order.product?.name}</p>
                     <p className="text-xs text-muted">{order.buyer?.name} · ₹{order.totalAmount}</p>
                   </div>
                   <OrderStatusBadge status={order.status} />
@@ -89,25 +118,29 @@ export default function FarmerDashboard() {
           )}
         </div>
 
-        <div className="card p-5">
-          <div className="flex items-center justify-between mb-4">
+        {/* My Listings */}
+        <div className="card p-5 md:col-span-2">
+          <div className="flex items-center justify-between mb-5">
             <h2 className="font-display text-lg font-semibold text-earth">My Listings</h2>
-            <Link href="/farmer/listings/new" className="text-xs text-leaf-600 hover:underline">+ Add new</Link>
+            <Link href="/farmer/listings/new" className="text-xs text-leaf-600 font-medium hover:underline">+ Add new</Link>
           </div>
           {data.listings.length === 0 ? (
-            <div className="text-center py-6">
+            <div className="text-center py-8">
+              <div className="text-3xl mb-3">🌱</div>
               <p className="text-sm text-muted mb-3">No listings yet</p>
-              <Link href="/farmer/listings/new" className="btn-primary text-sm">Create first listing</Link>
+              <Link href="/farmer/listings/new" className="inline-flex items-center gap-2 bg-leaf-600 text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-leaf-700 transition-all text-sm shadow-warm">
+                Create first listing
+              </Link>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="grid sm:grid-cols-2 gap-3">
               {data.listings.map((listing) => (
-                <div key={listing.id} className="flex items-center justify-between text-sm">
+                <div key={listing.id} className="flex items-center justify-between p-3 rounded-xl border border-[var(--border)] hover:border-leaf-300 transition-colors">
                   <div>
-                    <p className="font-medium text-earth">{listing.name}</p>
+                    <p className="font-semibold text-earth text-sm">{listing.name}</p>
                     <p className="text-xs text-muted">₹{listing.pricePerUnit}/{listing.unit} · {listing.quantityAvailable} left</p>
                   </div>
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${listing.status === "active" ? "bg-leaf-50 text-leaf-700" : "bg-soil-100 text-muted"}`}>
+                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${listing.status === "active" ? "bg-leaf-50 text-leaf-700 border border-leaf-200" : "bg-soil-100 text-muted"}`}>
                     {listing.status}
                   </span>
                 </div>

@@ -18,12 +18,22 @@ export default function EditListingPage() {
   }, [id]);
 
   if (loading) return <div className="flex justify-center pt-32"><Spinner size="lg" /></div>;
-  if (!product) return <div className="p-6 text-muted">Product not found.</div>;
+  if (!product) return (
+    <div className="p-6">
+      <div className="card p-10 text-center max-w-sm">
+        <div className="text-3xl mb-3">🌾</div>
+        <p className="text-muted">Product not found.</p>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="p-6 max-w-2xl">
-      <h1 className="font-display text-3xl font-bold text-earth mb-2">Edit Listing</h1>
-      <p className="text-muted text-sm mb-8">Update your listing details.</p>
+    <div className="p-6 max-w-2xl animate-fade-in">
+      <div className="mb-8">
+        <span className="text-leaf-600 text-xs font-semibold uppercase tracking-widest">Farmer</span>
+        <h1 className="font-display text-3xl font-bold text-earth mt-1">Edit Listing</h1>
+        <p className="text-muted text-sm mt-1">Update your listing details.</p>
+      </div>
       <div className="card p-6">
         <ProductForm initial={product} productId={product.id} />
       </div>

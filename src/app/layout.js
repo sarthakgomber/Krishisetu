@@ -1,5 +1,8 @@
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
+import Navbar from "@/components/layout/Navbar";
+import LanguageModal from "@/components/layout/LanguageModal";
 
 export const metadata = {
   title: "KrishiSetu — Farm to Table, Directly",
@@ -9,8 +12,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body pt-16>
-        <AuthProvider>{children}</AuthProvider>
+      <body className="pt-16">
+        <LanguageProvider>
+          <AuthProvider>
+            <LanguageModal />
+            <Navbar />
+            {children}
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

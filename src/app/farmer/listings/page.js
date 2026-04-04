@@ -30,47 +30,93 @@ export default function FarmerListingsPage() {
     setListings((prev) => prev.filter((l) => l.id !== id));
   }
 
+  const statusColors = {
+    active: "bg-leaf-50 text-leaf-700 border border-leaf-200",
+    soldout: "bg-amber-50 text-amber-700 border border-amber-200",
+    archived: "bg-soil-100 text-muted border border-[var(--border)]",
+  };
+
   return (
-    <div className="p-6 max-w-4xl">
+    <div className="p-6 max-w-4xl animate-fade-in">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="font-display text-3xl font-bold text-earth">My Listings</h1>
-        <Link href="/farmer/listings/new"><Button>+ New Listing</Button></Link>
+        <div>
+          <span className="text-leaf-600 text-xs font-semibold uppercase tracking-widest">Farmer</span>
+          <h1 className="font-display text-3xl font-bold text-earth mt-1">My Listings</h1>
+        </div>
+        <Link href="/farmer/listings/new">
+          <Button className="flex items-center gap-2">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            New Listing
+          </Button>
+        </Link>
       </div>
 
-      <div className="flex gap-1 mb-6 p-1 bg-soil-100 rounded-xl w-fit">
+      {/* Tabs */}
+      <div className="flex gap-1 mb-6 p-1 bg-soil-100 rounded-xl w-fit border border-[var(--border)]">
         {TABS.map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${tab === t ? "bg-white text-earth shadow-warm-sm" : "text-muted hover:text-earth"}`}>{t}</button>
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${
+              tab === t ? "bg-white text-earth shadow-warm-sm" : "text-muted hover:text-earth"
+            }`}
+          >
+            {t}
+          </button>
         ))}
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : listings.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="text-5xl mb-3">🌾</div>
+        <div className="card p-16 text-center">
+          <div className="w-16 h-16 bg-leaf-50 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 border border-leaf-200">🌾</div>
           <p className="font-display text-xl font-semibold text-earth mb-2">No {tab} listings</p>
-          <Link href="/farmer/listings/new"><Button className="mt-2">Create your first listing</Button></Link>
+          <p className="text-muted text-sm mb-6">Create your first listing to start selling.</p>
+          <Link href="/farmer/listings/new">
+            <Button>Create a listing</Button>
+          </Link>
         </div>
       ) : (
         <div className="space-y-3">
           {listings.map((listing) => (
-            <div key={listing.id} className="card p-4 flex gap-4 items-center">
-              <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-soil-50 shrink-0">
+            <div key={listing.id} className="card p-4 flex gap-4 items-center hover:shadow-warm-lg transition-shadow">
+              {/* Thumbnail */}
+              <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-soil-50 shrink-0 border border-[var(--border)]">
                 {listing.images?.[0] ? (
                   <Image src={listing.images[0]} alt={listing.name} fill className="object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-2xl">🌾</div>
                 )}
               </div>
+
+              {/* Info */}
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-earth">{listing.name}</p>
-                <p className="text-sm text-muted">₹{listing.pricePerUnit}/{listing.unit} · {listing.quantityAvailable} available{listing.state && ` · ${listing.state}`}</p>
+                <p className="font-semibold text-earth">{listing.name}</p>
+                <p className="text-sm text-muted mt-0.5">
+                  ₹{listing.pricePerUnit}/{listing.unit} · {listing.quantityAvailable} available
+                  {listing.state && ` · ${listing.state}`}
+                </p>
               </div>
+
+              {/* Actions */}
               <div className="flex items-center gap-2 shrink-0">
-                <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${listing.status === "active" ? "bg-leaf-50 text-leaf-700" : listing.status === "soldout" ? "bg-amber-50 text-amber-700" : "bg-soil-100 text-muted"}`}>{listing.status}</span>
-                <Link href={`/farmer/listings/${listing.id}/edit`}><Button variant="secondary" size="sm">Edit</Button></Link>
+                <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusColors[listing.status] || statusColors.archived}`}>
+                  {listing.status}
+                </span>
+                <Link href={`/farmer/listings/${listing.id}/edit`}>
+                  <Button variant="secondary" size="sm">Edit</Button>
+                </Link>
                 {listing.status !== "archived" && (
-                  <Button variant="ghost" size="sm" onClick={() => handleArchive(listing.id)} className="text-red-500 hover:bg-red-50 hover:text-red-600">Archive</Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleArchive(listing.id)}
+                    className="text-red-500 hover:bg-red-50 hover:text-red-600"
+                  >
+                    Archive
+                  </Button>
                 )}
               </div>
             </div>

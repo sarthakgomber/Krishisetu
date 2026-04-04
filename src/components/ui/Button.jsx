@@ -8,26 +8,11 @@ const variants = {
   link: "text-leaf-600 hover:text-leaf-700 font-medium underline-offset-2 hover:underline",
 };
 
-const sizes = {
-  sm: "!px-3.5 !py-1.5 text-sm",
-  md: "",
-  lg: "!px-7 !py-3.5 text-base",
-};
+const sizes = { sm: "!px-3.5 !py-1.5 text-sm", md: "", lg: "!px-7 !py-3.5 text-base" };
 
-export default function Button({
-  children,
-  variant = "primary",
-  size = "md",
-  className = "",
-  loading = false,
-  ...props
-}) {
+export default function Button({ children, variant = "primary", size = "md", className = "", loading = false, ...props }) {
   return (
-    <button
-      className={clsx(variants[variant], sizes[size], className)}
-      disabled={loading || props.disabled}
-      {...props}
-    >
+    <button className={clsx(variants[variant], sizes[size], "relative overflow-hidden group", className)} disabled={loading || props.disabled} {...props}>
       {loading ? (
         <span className="flex items-center gap-2">
           <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
@@ -36,9 +21,7 @@ export default function Button({
           </svg>
           {children}
         </span>
-      ) : (
-        children
-      )}
+      ) : children}
     </button>
   );
 }

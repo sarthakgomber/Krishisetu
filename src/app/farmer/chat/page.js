@@ -41,42 +41,65 @@ function FarmerChatInner() {
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-cream">
+      {/* Sidebar */}
       <div className="w-72 shrink-0 border-r border-[var(--border)] bg-white flex flex-col">
-        <div className="p-4 border-b border-[var(--border)]">
-          <h2 className="font-display text-lg font-semibold text-earth">Messages</h2>
+        <div className="p-5 border-b border-[var(--border)]">
+          <span className="text-leaf-600 text-xs font-semibold uppercase tracking-widest block mb-1">Messages</span>
+          <h2 className="font-display text-lg font-semibold text-earth">Conversations</h2>
         </div>
         {loading ? (
           <div className="flex justify-center pt-10"><Spinner /></div>
         ) : conversations.length === 0 ? (
-          <div className="text-center p-6 text-muted text-sm">No conversations yet.</div>
+          <div className="text-center p-8 text-muted text-sm leading-relaxed">
+            <div className="text-3xl mb-3">💬</div>
+            No conversations yet.<br />Buyers will message when interested.
+          </div>
         ) : (
           <div className="flex-1 overflow-y-auto">
             {conversations.map((order) => {
               const room = `${order.buyer?.id}_${order.product?.id}`;
+              const isActive = activeRoom === room;
               return (
-                <button key={room} onClick={() => selectRoom(order)} className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-soil-50 transition-colors border-b border-[var(--border)] ${activeRoom === room ? "bg-leaf-50" : ""}`}>
-                  <div className="w-9 h-9 rounded-full bg-soil-100 flex items-center justify-center shrink-0">
-                    <span className="text-soil-700 font-semibold text-sm">{order.buyer?.name?.charAt(0)?.toUpperCase()}</span>
+                <button
+                  key={room}
+                  onClick={() => selectRoom(order)}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors border-b border-[var(--border)] ${
+                    isActive ? "bg-leaf-50 border-l-2 border-l-leaf-500" : "hover:bg-soil-50"
+                  }`}
+                >
+                  <div className="w-10 h-10 rounded-full bg-soil-100 flex items-center justify-center shrink-0 border border-[var(--border)]">
+                    <span className="text-soil-700 font-bold text-sm">
+                      {order.buyer?.name?.charAt(0)?.toUpperCase()}
+                    </span>
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-earth truncate">{order.buyer?.name}</p>
+                    <p className={`text-sm font-semibold truncate ${isActive ? "text-leaf-700" : "text-earth"}`}>
+                      {order.buyer?.name}
+                    </p>
                     <p className="text-xs text-muted truncate">{order.product?.name}</p>
                   </div>
+                  {isActive && <div className="ml-auto w-2 h-2 bg-leaf-500 rounded-full shrink-0" />}
                 </button>
               );
             })}
           </div>
         )}
       </div>
+
+      {/* Chat area */}
       <div className="flex-1">
         {activeRoom && user ? (
-          <ChatWindow roomId={activeRoom} userId={user.id} otherUser={{ id: activeBuyer?.id, name: activeBuyer?.name }} />
+          <ChatWindow
+            roomId={activeRoom}
+            userId={user.id}
+            otherUser={{ id: activeBuyer?.id, name: activeBuyer?.name }}
+          />
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="text-5xl mb-3">💬</div>
+            <div className="w-20 h-20 bg-leaf-50 rounded-3xl flex items-center justify-center text-4xl mb-4 border border-leaf-200">💬</div>
             <p className="font-display text-xl font-semibold text-earth">Select a conversation</p>
-            <p className="text-muted text-sm mt-1">Choose from the list on the left.</p>
+            <p className="text-muted text-sm mt-2 max-w-xs">Choose from the list on the left to start chatting.</p>
           </div>
         )}
       </div>
