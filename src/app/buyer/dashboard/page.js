@@ -31,7 +31,6 @@ export default function BuyerDashboard() {
 
   return (
     <div className="p-6 max-w-4xl animate-fade-in">
-      {/* Header */}
       <div className="mb-8">
         <span className="text-leaf-600 text-xs font-semibold uppercase tracking-widest">Buyer Dashboard</span>
         <h1 className="font-display text-3xl font-bold text-earth mt-1">
@@ -57,9 +56,9 @@ export default function BuyerDashboard() {
       </div>
 
       {/* Browse CTA banner */}
-      <div className="relative bg-leaf-700 rounded-3xl p-6 mb-8 overflow-hidden border-0 shadow-warm-lg">
+      <div className="relative bg-leaf-700 rounded-3xl p-6 mb-8 overflow-hidden shadow-warm-lg">
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 80% 50%, rgba(56,152,54,0.3) 0%, transparent 60%)" }} />
-        <div className="relative flex items-center justify-between gap-4">
+        <div className="relative flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h2 className="font-display text-xl font-semibold text-white mb-1">Browse fresh produce</h2>
             <p className="text-leaf-200 text-sm">Directly from farms across India. No middlemen.</p>
@@ -79,7 +78,7 @@ export default function BuyerDashboard() {
         {loading ? (
           <div className="flex justify-center py-10"><Spinner /></div>
         ) : orders.length === 0 ? (
-          <div className="card p-10 text-center">
+          <div className="card p-12 text-center">
             <div className="w-16 h-16 bg-soil-50 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">🛒</div>
             <p className="font-display text-lg font-semibold text-earth mb-1">No orders yet</p>
             <p className="text-muted text-sm mb-6">Start by browsing produce from farmers near you.</p>

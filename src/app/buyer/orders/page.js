@@ -48,25 +48,22 @@ export default function BuyerOrdersPage() {
 
   return (
     <div className="p-6 max-w-3xl animate-fade-in">
-      {/* Header */}
       <div className="mb-6">
         <span className="text-leaf-600 text-xs font-semibold uppercase tracking-widest">Buyer</span>
         <h1 className="font-display text-3xl font-bold text-earth mt-1">My Orders</h1>
+        <p className="text-muted text-sm mt-1">Track and manage your purchases.</p>
       </div>
 
       {/* Rate nudge */}
       {completedUnrated.length > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
           <p className="text-sm font-semibold text-amber-800 mb-3 flex items-center gap-2">
-            <span>⭐</span> Rate your recent orders
+            <span>⭐</span> Rate your recent orders — help other buyers
           </p>
           <div className="flex flex-wrap gap-2">
             {completedUnrated.slice(0, 3).map((o) => (
-              <button
-                key={o.id}
-                onClick={() => setRatingModal(o)}
-                className="text-xs bg-white text-amber-800 border border-amber-200 px-3 py-1.5 rounded-xl hover:bg-amber-100 transition-colors font-medium shadow-warm-sm"
-              >
+              <button key={o.id} onClick={() => setRatingModal(o)}
+                className="text-xs bg-white text-amber-800 border border-amber-200 px-3 py-1.5 rounded-xl hover:bg-amber-100 transition-colors font-medium shadow-warm-sm">
                 Rate: {o.product?.name} →
               </button>
             ))}
@@ -77,9 +74,7 @@ export default function BuyerOrdersPage() {
       {/* Tabs */}
       <div className="flex gap-1 mb-6 p-1 bg-soil-100 rounded-xl w-fit overflow-x-auto scrollbar-hide border border-[var(--border)]">
         {TABS.map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
+          <button key={t} onClick={() => setTab(t)}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize whitespace-nowrap transition-colors ${
               tab === t ? "bg-white text-earth shadow-warm-sm" : "text-muted hover:text-earth"
             }`}
@@ -108,10 +103,8 @@ export default function BuyerOrdersPage() {
             <div key={order.id}>
               <OrderCard order={order} role="buyer" onStatusChange={handleStatusChange} />
               {order.status === "completed" && !ratedOrders.has(order.id) && (
-                <button
-                  onClick={() => setRatingModal(order)}
-                  className="text-xs text-leaf-600 font-medium hover:underline ml-1 mt-1.5 block"
-                >
+                <button onClick={() => setRatingModal(order)}
+                  className="text-xs text-leaf-600 font-medium hover:underline ml-1 mt-1.5 flex items-center gap-1">
                   ⭐ Leave a rating for this order
                 </button>
               )}
@@ -134,13 +127,9 @@ export default function BuyerOrdersPage() {
             </div>
             <div>
               <label className="text-sm font-medium text-earth block mb-1.5">Review (optional)</label>
-              <textarea
-                value={rating.review}
-                onChange={(e) => setRating((r) => ({ ...r, review: e.target.value }))}
-                rows={3}
-                placeholder="Share your experience with this farmer..."
-                className="input-base resize-none text-sm"
-              />
+              <textarea value={rating.review} onChange={(e) => setRating((r) => ({ ...r, review: e.target.value }))}
+                rows={3} placeholder="Share your experience with this farmer..."
+                className="input-base resize-none text-sm" />
             </div>
             <Button onClick={submitRating} loading={submitting} disabled={!rating.stars} className="w-full justify-center">
               Submit Rating

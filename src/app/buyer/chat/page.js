@@ -43,7 +43,7 @@ function BuyerChatInner() {
   }
 
   return (
-    <div className="flex h-screen bg-cream">
+    <div className="flex h-[calc(100vh-4rem)] bg-cream">
       {/* Sidebar */}
       <div className="w-72 shrink-0 border-r border-[var(--border)] bg-white flex flex-col">
         <div className="p-5 border-b border-[var(--border)]">
@@ -54,18 +54,16 @@ function BuyerChatInner() {
           <div className="flex justify-center pt-10"><Spinner /></div>
         ) : conversations.length === 0 ? (
           <div className="text-center p-8 text-muted text-sm leading-relaxed">
-            <div className="text-3xl mb-3">💬</div>
+            <div className="w-12 h-12 bg-leaf-50 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 border border-leaf-100">💬</div>
             No conversations yet.<br />Open a product and click &ldquo;Chat with Farmer&rdquo;.
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto scrollbar-hide">
             {conversations.map((order) => {
               const room = `${user?.id}_${order.product?.id}`;
               const isActive = activeRoom === room;
               return (
-                <button
-                  key={room}
-                  onClick={() => selectRoom(order)}
+                <button key={room} onClick={() => selectRoom(order)}
                   className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors border-b border-[var(--border)] ${
                     isActive ? "bg-leaf-50 border-l-2 border-l-leaf-500" : "hover:bg-soil-50"
                   }`}
@@ -75,13 +73,13 @@ function BuyerChatInner() {
                       {(order.farmer?.farmName || order.farmer?.name)?.charAt(0)?.toUpperCase()}
                     </span>
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className={`text-sm font-semibold truncate ${isActive ? "text-leaf-700" : "text-earth"}`}>
                       {order.farmer?.farmName || order.farmer?.name}
                     </p>
                     <p className="text-xs text-muted truncate">{order.product?.name}</p>
                   </div>
-                  {isActive && <div className="ml-auto w-2 h-2 bg-leaf-500 rounded-full shrink-0" />}
+                  {isActive && <div className="w-2 h-2 bg-leaf-500 rounded-full shrink-0" />}
                 </button>
               );
             })}
@@ -90,13 +88,9 @@ function BuyerChatInner() {
       </div>
 
       {/* Chat area */}
-      <div className="flex-1">
+      <div className="flex-1 overflow-hidden">
         {activeRoom && user ? (
-          <ChatWindow
-            roomId={activeRoom}
-            userId={user.id}
-            otherUser={{ id: activeFarmer?.id, name: activeFarmer?.farmName || activeFarmer?.name }}
-          />
+          <ChatWindow roomId={activeRoom} userId={user.id} otherUser={{ id: activeFarmer?.id, name: activeFarmer?.farmName || activeFarmer?.name }} />
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="w-20 h-20 bg-leaf-50 rounded-3xl flex items-center justify-center text-4xl mb-4 border border-leaf-200">💬</div>

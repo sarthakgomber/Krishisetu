@@ -6,11 +6,9 @@ export default function NewListingPage() {
       <div className="mb-8">
         <span className="text-leaf-600 text-xs font-semibold uppercase tracking-widest">Farmer</span>
         <h1 className="font-display text-3xl font-bold text-earth mt-1">New Listing</h1>
-        <p className="text-muted text-sm mt-1">Fill in the details about your produce.</p>
+        <p className="text-muted text-sm mt-1">Fill in the details about your produce to go live instantly.</p>
       </div>
-      <div className="card p-6">
-        <ProductForm />
-      </div>
+      <ProductForm />
     </div>
   );
 }

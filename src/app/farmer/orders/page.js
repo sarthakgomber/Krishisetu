@@ -27,10 +27,10 @@ export default function FarmerOrdersPage() {
 
   return (
     <div className="p-6 max-w-3xl animate-fade-in">
-      {/* Header */}
       <div className="mb-6">
         <span className="text-leaf-600 text-xs font-semibold uppercase tracking-widest">Farmer</span>
         <h1 className="font-display text-3xl font-bold text-earth mt-1">Orders</h1>
+        <p className="text-muted text-sm mt-1">Manage incoming orders from buyers.</p>
       </div>
 
       {/* Tabs */}
@@ -38,9 +38,7 @@ export default function FarmerOrdersPage() {
         {TABS.map((t) => {
           const count = orders.filter((o) => o.status === t).length;
           return (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
+            <button key={t} onClick={() => setTab(t)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium capitalize whitespace-nowrap transition-colors flex items-center gap-1.5 ${
                 tab === t ? "bg-white text-earth shadow-warm-sm" : "text-muted hover:text-earth"
               }`}
@@ -49,9 +47,7 @@ export default function FarmerOrdersPage() {
               {t !== "all" && count > 0 && (
                 <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold ${
                   tab === t ? "bg-leaf-100 text-leaf-700" : "bg-soil-200 text-muted"
-                }`}>
-                  {count}
-                </span>
+                }`}>{count}</span>
               )}
             </button>
           );
